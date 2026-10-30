@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Personal documents (the CV source and PDF) live outside the published site, in
+# ../references and ../output. These lines keep them out if they are copied in.
+references/
+output/
+
+# Originals that the site shows as copies, kept out of the published site:
+# the CV (shown as assets/documents/cv-muhammad-fadhillah.pdf) and the A2 report
+# (shown as assignments/files/professional-text.pdf)
+assignments/CV English Profesional 2300018235.pdf
+assignments/2300018235_english assighment week2.pdf

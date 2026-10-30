@@ -1,0 +1,15 @@
+{
+  "name": "english-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal portfolio of Muhammad Fadhillah. Static site for GitHub Pages; the dev dependencies are only used to build image assets.",
+  "scripts": {
+    "textures": "node tools/build-textures.mjs",
+    "photo": "node tools/optimize-photo.mjs",
+    "serve": "python -m http.server 8000"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1",
+    "sharp": "^0.35.5"
+  }
+}

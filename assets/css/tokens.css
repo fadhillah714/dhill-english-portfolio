@@ -1,0 +1,67 @@
+/* ==========================================================================
+   Design tokens
+   The six palette colours below are the only colours used anywhere on the
+   site. Everything else is a transparency variant of one of them.
+   ========================================================================== */
+
+:root {
+  /* Palette */
+  --sunset-orange: #E8602C;
+  --magenta: #C2336B;
+  --purple: #5B2A8C;
+  --midnight: #1B1A4B;
+  --ink: #14101F;
+  --cream: #FFF6EA;
+
+  /* Transparency variants of the same six colours */
+  --ink-96: rgb(20 16 31 / 0.96);
+  --ink-82: rgb(20 16 31 / 0.82);
+  --ink-70: rgb(20 16 31 / 0.7);
+  --ink-46: rgb(20 16 31 / 0.46);
+  --cream-80: rgb(255 246 234 / 0.8);
+  --cream-55: rgb(255 246 234 / 0.55);
+  --cream-40: rgb(255 246 234 / 0.4);
+  --cream-22: rgb(255 246 234 / 0.22);
+  --cream-12: rgb(255 246 234 / 0.12);
+
+  /* Typography */
+  --font-display: 'Bagel Fat One', 'Chango', cursive;
+  --font-body: 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --track: 0.14em;
+  --track-wide: 0.22em;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: clamp(1rem, 0.94rem + 0.1vw, 1.0625rem);
+  --text-lg: clamp(1.0625rem, 0.98rem + 0.3vw, 1.25rem);
+  --display-sm: clamp(1.625rem, 1.25rem + 1.3vw, 2.5rem);
+  --display-md: clamp(2.125rem, 1.4rem + 2.9vw, 4.25rem);
+
+  /* Outline lettering */
+  --outline: 2px;
+
+  /* Layout */
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --maxw: 76rem;
+  --topbar-h: 3.875rem;
+  --rail: 1.5rem;
+  --cut: 0.9375rem;
+  --frame-line: 1.2px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.8, 0.24, 1);
+  --dur: 240ms;
+
+  /* Decorative masks (shapes only; colour comes from the element background) */
+  --wave-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'%3E%3Cpath d='M0 3c2-3 4-3 6 0s4 3 6 0' fill='none' stroke='%2314101F' stroke-width='1.4'/%3E%3C/svg%3E");
+  --star-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpath d='M0 -10 Q0.9 -0.9 10 0 Q0.9 0.9 0 10 Q-0.9 0.9 -10 0 Q-0.9 -0.9 0 -10Z' fill='%2314101F'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 759.98px) {
+  :root {
+    --outline: 1.4px;
+    --topbar-h: 3.5rem;
+    --rail: 1.375rem;
+    --cut: 0.75rem;
+  }
+}

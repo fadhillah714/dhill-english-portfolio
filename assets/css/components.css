@@ -200,25 +200,110 @@
   gap: 1.5rem;
 }
 
+/* Logo: "muh.dhill" in a racing italic, inside two elliptical swooshes.
+   The swooshes are full ellipses (pathLength 100) showing one dash each, so on
+   hover the dash can travel round the ellipse: one orbit, the thick one forwards
+   and the thin one backwards. The SVG (3:1, like the logo box) scales with the
+   text, strokes included; no non-scaling-stroke, which would measure the dashes
+   in screen pixels and break the pathLength. An ink halo round the letters cuts
+   the lines where they pass behind the word. */
 .lettermark {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
   min-height: 44px;
-  font-family: var(--font-display);
-  font-size: 1.25rem;
+  padding: 0.42em 0.6em;
+  font-family: var(--font-logo);
+  font-size: 1.3rem;
+  font-style: italic;
+  font-synthesis: none;
   line-height: 1;
   color: var(--cream);
 }
 
-.lettermark .star {
-  width: 0.7em;
-  height: 0.7em;
-  transition: transform 0.6s var(--ease);
+.lettermark__orbit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
 }
 
-.lettermark:hover .star {
-  transform: rotate(90deg);
+.lettermark__swoosh {
+  fill: none;
+  stroke-linecap: round;
+  transition:
+    stroke-dashoffset 0.75s var(--ease),
+    stroke-dasharray 0.75s var(--ease),
+    opacity 0.4s var(--ease);
+}
+
+/* Thick swoosh: from the upper right, round the bottom, to the left end */
+.lettermark__swoosh--main {
+  stroke: var(--sunset-orange);
+  stroke-width: 4.4;
+  stroke-dasharray: 56 44;
+  stroke-dashoffset: -92;
+  opacity: 0.75;
+}
+
+/* Thin swoosh: from the left end over the top of the word */
+.lettermark__swoosh--thin {
+  stroke: var(--cream);
+  stroke-width: 2.4;
+  stroke-dasharray: 28 72;
+  stroke-dashoffset: -54;
+  opacity: 0.45;
+}
+
+.lettermark__text {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  text-shadow:
+    0.07em 0 0 var(--ink), -0.07em 0 0 var(--ink), 0 0.07em 0 var(--ink), 0 -0.07em 0 var(--ink),
+    0.05em 0.05em 0 var(--ink), -0.05em -0.05em 0 var(--ink), 0.05em -0.05em 0 var(--ink), -0.05em 0.05em 0 var(--ink);
+  transform-origin: 30% 60%;
+  transition: transform 0.5s var(--ease);
+}
+
+.lettermark:hover .lettermark__swoosh {
+  transition-duration: 1.1s, 1.1s, 0.4s;
+  opacity: 1;
+}
+
+.lettermark:hover .lettermark__swoosh--main {
+  stroke-dasharray: 64 36;
+  stroke-dashoffset: -192;
+}
+
+.lettermark:hover .lettermark__swoosh--thin {
+  stroke-dasharray: 34 66;
+  stroke-dashoffset: 46;
+}
+
+.lettermark:hover .lettermark__text {
+  transform: skewX(-5deg) scale(1.04);
+}
+
+/* Without motion: the swooshes only brighten */
+@media (prefers-reduced-motion: reduce) {
+  .lettermark:hover .lettermark__swoosh--main {
+    stroke-dasharray: 56 44;
+    stroke-dashoffset: -92;
+  }
+
+  .lettermark:hover .lettermark__swoosh--thin {
+    stroke-dasharray: 28 72;
+    stroke-dashoffset: -54;
+  }
+
+  .lettermark:hover .lettermark__text {
+    transform: none;
+  }
 }
 
 .nav {
@@ -586,7 +671,7 @@ html.is-locked body {
   }
 
   .lettermark {
-    font-size: 1.375rem;
+    font-size: 1.45rem;
   }
 }
 

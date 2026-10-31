@@ -2066,9 +2066,12 @@ html.is-locked body {
   transition: color var(--dur) var(--ease);
 }
 
+/* Title and summary sit in this wrapper (built by content.js), so this gap is
+   the space between them; .assign-row is a single-row grid and its gap never
+   applies here */
 .assign-row__main {
   display: grid;
-  gap: 0.6rem;
+  gap: 1.25rem;
   justify-items: start;
 }
 
@@ -2140,10 +2143,19 @@ html.is-locked body {
    11. Assignment detail
    ========================================================================== */
 
-/* The page head of an assignment ends 14px lower than other page heads (same
-   value as .page-hero plus 0.875rem), giving the title more room before the summary */
+/* Space between the page title and the summary. The summary is not in the page
+   head but in .detail below it, and the title is the last item in
+   .page-hero__inner, so a gap there or a lede margin does not reach it: this
+   padding at the bottom of the page head does (.page-hero value plus extra).
+   Below 1000px the numeral strip further down adds its own space. */
 main[data-assignment] > .page-hero {
   padding-bottom: calc(clamp(2rem, 4.5vw, 3.5rem) + 0.875rem);
+}
+
+@media (min-width: 1000px) {
+  main[data-assignment] > .page-hero {
+    padding-bottom: calc(clamp(2rem, 4.5vw, 3.5rem) + 2.5rem);
+  }
 }
 
 .detail-num {

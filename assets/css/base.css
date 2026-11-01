@@ -102,7 +102,7 @@ button {
   color: var(--ink);
 }
 
-/* Inline SVG definitions (star symbol and the warp filters). Not display:none,
+/* Inline SVG definitions (star and close symbols, warp filters). Not display:none,
    otherwise some browsers drop the filters. */
 .svg-defs {
   position: absolute;

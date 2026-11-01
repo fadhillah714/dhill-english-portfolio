@@ -13,7 +13,8 @@
    1. Decorative system
    ========================================================================== */
 
-/* Four-point star: <svg class="star"><use href="#star"/></svg> */
+/* Six-point star: <svg class="star"><use href="#star"/></svg>. Needle-thin rays
+   round a small centre; the same shape is --star-mask in tokens.css. */
 .star {
   width: 1em;
   height: 1em;
@@ -540,6 +541,7 @@ html.is-locked body {
   color: var(--cream);
 }
 
+/* The close icon keeps the four-point shape (#close): turned 45deg it reads as an X */
 .sheet__close .star {
   width: 22px;
   height: 22px;

@@ -116,7 +116,7 @@ makes GitHub serve the files as they are.
 - **Palette** (only these six, plus transparency variants): sunset orange `#E8602C`,
   magenta `#C2336B`, purple `#5B2A8C`, midnight `#1B1A4B`, ink `#14101F`, cream `#FFF6EA`.
 - **Type:** Bagel Fat One for display lettering, DM Sans 400/500 for everything you read.
-- **Decoration:** four-point stars, wavy lines (active menu and links), organic curves,
+- **Decoration:** six-point stars, wavy lines (active menu and links), organic curves,
   outline numerals and tick-marked rules.
 - **Accessibility:** skip link, one `h1` per page, keyboard-operable dropdown and menu,
   visible focus, text contrast of at least 4.5:1 (3:1 for large display type), and

@@ -414,10 +414,10 @@ html:not(.js) .nav__item--menu:is(:hover, :focus-within) .dropdown {
 
 .dropdown__link .star {
   position: absolute;
-  left: 0.5rem;
-  top: 50%;
-  width: 0.75rem;
-  height: 0.75rem;
+  left: 0.2rem;
+  top: 41%;
+  width: 1.1rem;
+  height: 1.1rem;
   margin-top: -0.375rem;
   opacity: 0;
   transform: scale(0.3) rotate(-90deg);
@@ -846,22 +846,22 @@ html.is-locked body {
 .hero__spark--1 {
   top: 0.5rem;
   left: 6%;
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.9rem;
+  height: 1.9rem;
 }
 
 .hero__spark--2 {
   top: 56%;
   right: 6%;
-  width: 0.9rem;
-  height: 0.9rem;
+  width: 1.7rem;
+  height: 1.7rem;
 }
 
 .hero__spark--3 {
   top: 76%;
   left: 46%;
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 1.55rem;
+  height: 1.55rem;
 }
 
 .hero__index {
@@ -952,13 +952,13 @@ html.is-locked body {
   }
 
   .hero__spark--1 {
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 1.8rem;
+    height: 1.8rem;
   }
 
   .hero__spark--2 {
-    width: 1.1rem;
-    height: 1.1rem;
+    width: 1.55rem;
+    height: 1.55rem;
   }
 }
 
@@ -1133,8 +1133,8 @@ html.is-locked body {
 
 .lineup li:not(:last-child)::after {
   content: "";
-  width: 0.6em;
-  height: 0.6em;
+  width: 1.1em;
+  height: 1.1em;
   margin-inline: 0.8em;
   background: var(--sunset-orange);
   -webkit-mask: var(--star-mask) center / contain no-repeat;
@@ -1506,8 +1506,8 @@ html.is-locked body {
 .page-hero__star--2 {
   top: 7.5rem;
   right: 3%;
-  width: 0.9rem;
-  height: 0.9rem;
+  width: 1.9rem;
+  height: 1.9rem;
 }
 
 @media (min-width: 760px) {
@@ -1607,8 +1607,8 @@ html.is-locked body {
 
 .skill-list li:not(:last-child)::after {
   content: "";
-  width: 0.55em;
-  height: 0.55em;
+  width: 0.85em;
+  height: 0.85em;
   margin-inline: 0.75em;
   background: var(--cream);
   -webkit-mask: var(--star-mask) center / contain no-repeat;
@@ -1791,8 +1791,8 @@ html.is-locked body {
 }
 
 .preview__label .star {
-  width: 0.8rem;
-  height: 0.8rem;
+  width: 1.3rem;
+  height: 1.3rem;
   color: var(--sunset-orange);
 }
 
@@ -1822,8 +1822,8 @@ html.is-locked body {
 }
 
 .project__period .star {
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 1.2rem;
+  height: 1.2rem;
   color: var(--sunset-orange);
 }
 
@@ -1893,9 +1893,9 @@ html.is-locked body {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.42em;
-  width: 0.7em;
-  height: 0.7em;
+  top: 0.27em;
+  width: 1.1em;
+  height: 1.1em;
   background: var(--sunset-orange);
   -webkit-mask: var(--star-mask) center / contain no-repeat;
   mask: var(--star-mask) center / contain no-repeat;

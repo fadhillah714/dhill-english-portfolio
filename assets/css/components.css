@@ -1041,8 +1041,11 @@ html.is-locked body {
   margin: 0.5rem 0 0.75rem;
 }
 
-/* Poster collage: the photo is pasted over a swatch of the artwork */
+/* Poster collage: the photo is pasted over a swatch of the artwork. --c cuts
+   the frame's corners, --ci the photo window's just inside the frame line. */
 .photo {
+  --c: 1.4rem;
+  --ci: calc(var(--c) - 0.7px);
   position: relative;
   isolation: isolate;
   transform: rotate(-2deg);
@@ -1058,10 +1061,20 @@ html.is-locked body {
   transform: rotate(5deg);
 }
 
-/* --c cuts the frame's corners, --ci the photo window's just inside the frame line */
+/* CRT scanlines, always on: fine dark lines every 3px over the photo window,
+   above the photo and any signal interference. Each line fades out on both
+   sides instead of ending hard, so on the tilted collage it stays a clean
+   line rather than breaking into steps. Decorative only. */
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: var(--frame-line);
+  background: repeating-linear-gradient(rgb(20 16 31 / 0.15) 0, rgb(20 16 31 / 0) 1.2px, rgb(20 16 31 / 0) 1.8px, rgb(20 16 31 / 0.15) 3px);
+  clip-path: polygon(var(--ci) 0, 100% 0, 100% calc(100% - var(--ci)), calc(100% - var(--ci)) 100%, 0 100%, 0 var(--ci));
+  pointer-events: none;
+}
+
 .photo__frame {
-  --c: 1.4rem;
-  --ci: calc(var(--c) - 0.7px);
   position: relative;
   padding: var(--frame-line);
   background: var(--cream);
@@ -1096,34 +1109,36 @@ html.is-locked body {
 /* Analog signal failure (about-vhs.js): now and then the photo plays like a
    portrait on a CRT whose vertical hold slips. The script sets one class on
    the figure, never both, and the run's length as --vhs-time:
-   - .is-vhs-bold, interactive: once per mouse entry, and on a click during
-     an ambient run. 2.3s: the picture creeps up a quarter of its height
+   - .is-vhs-bold, interactive: once per mouse entry or click (tap), never
+     stacked. 2.3s: the picture creeps up a sixth of its height
      (0-1.1s), hangs there unsteadily, wrapped round, while bands tear and
      the snow peaks (1.1-1.56s), glides back down in 0.3s, quick but smooth,
      as the vertical sync locks, then stays still while a thin band and a
      little snow flicker and fade (1.86-2.25s).
    - .is-vhs-ambient: a light hiccup every 10 seconds without interaction,
-     1-1.5s: the same slow creep (5-8%), smooth quick drop and short fade, one
+     1-1.5s: the same slow creep (3.3-5.3%), smooth quick drop and short fade, one
      tracking band, faint snow. The script varies it each run (--vhs-roll-amp, --vhs-band-top,
      --vhs-band-size, --vhs-band-shift).
    All of it is drawn inside the photo's window over the untouched <img>;
-   the frame, swatch, star and layout never move. Three layers:
+   the frame, swatch, star and layout never move. Three layers, all under
+   the scanlines (.photo::after), which stay throughout:
    - Vertical slip + wraparound (picture::before): the photo the <img> shows
      (--vhs-photo, its current source, set by the script) repeated
      vertically on a box twice the window's height, one tile per window, so
      a percentage position moves it by a share of the window. --vhs-roll is
-     that share: at 0.25 the picture sits a quarter higher and its top
-     quarter shows again at the bottom, joined with no gap; back at 0 it
+     that share: at 0.1667 the picture sits a sixth higher and its top
+     sixth shows again at the bottom, joined with no gap; back at 0 it
      lines up with the photo again. One slip up and back per run.
    - Horizontal interference (picture::after, .photo__frame::before): the
      rolled picture once more, cut down to one or two bands and slid
      sideways, ink where it slid away, colour washed out like a weak signal.
      The first set carries the tracking streaks.
-   - Snow (.photo__frame::after): grey static that jumps every frame, with
-     faint scanlines; never opaque.
-   Mouse devices only and never with reduced motion; at rest, without JS and
-   on touch screens none of it exists. The timing is in about-vhs.js, the
-   look and intensity in the keyframes below. */
+   - Snow (.photo__frame::after): grey static that jumps every frame; never
+     opaque.
+   Hover and the ambient runs need a mouse; a click or tap plays it on any
+   screen. Never with reduced motion; at rest and without JS none of it
+   exists. The timing is in about-vhs.js, the look and intensity in the
+   keyframes below. */
 @property --vhs-roll {
   syntax: "<number>";
   inherits: true;
@@ -1166,7 +1181,7 @@ html.is-locked body {
   --vhs-streaks: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48'%3E%3Cfilter id='t' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.015 0.7' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 3 -1.55'/%3E%3C/filter%3E%3Crect width='96' height='48' filter='url(%23t)'/%3E%3C/svg%3E");
 }
 
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {
   /* Vertical roll + wraparound */
   :is(.is-vhs-bold, .is-vhs-ambient) .photo__frame picture::before {
     content: "";
@@ -1220,15 +1235,13 @@ html.is-locked body {
     filter: saturate(0.7);
   }
 
-  /* Snow over the window, with faint scanlines */
+  /* Snow over the window */
   :is(.is-vhs-bold, .is-vhs-ambient) .photo__frame::after {
     content: "";
     position: absolute;
     inset: var(--frame-line);
     z-index: 2;
-    background:
-      repeating-linear-gradient(rgb(20 16 31 / 0.3) 0 1px, transparent 1px 3px),
-      var(--vhs-snow) 0 0 / 128px 128px;
+    background: var(--vhs-snow) 0 0 / 128px 128px;
     clip-path: polygon(var(--ci) 0, 100% 0, 100% calc(100% - var(--ci)), calc(100% - var(--ci)) 100%, 0 100%, 0 var(--ci));
     opacity: 0;
     pointer-events: none;
@@ -1269,7 +1282,7 @@ html.is-locked body {
   }
 }
 
-/* Interactive, 2.3s (1% = 23ms). The picture creeps up a quarter on one slow,
+/* Interactive, 2.3s (1% = 23ms). The picture creeps up a sixth on one slow,
    even curve (0-1.1s) and hangs there unsteadily (1.1-1.56s). Then the
    vertical sync locks: it glides back down in 300ms, setting off gently,
    quick in the middle and easing into place, settling exactly on 0, and
@@ -1277,10 +1290,10 @@ html.is-locked body {
    fades (see the bands and snow). Each stretch carries its own easing. */
 @keyframes vhs-roll-bold {
   0% { --vhs-roll: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95); }
-  47.83% { --vhs-roll: 0.25; animation-timing-function: ease-in-out; }
-  54.52% { --vhs-roll: 0.256; animation-timing-function: ease-in-out; }
-  62.17% { --vhs-roll: 0.246; animation-timing-function: ease-in-out; }
-  67.91% { --vhs-roll: 0.252; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  47.83% { --vhs-roll: 0.1667; animation-timing-function: ease-in-out; }
+  54.52% { --vhs-roll: 0.171; animation-timing-function: ease-in-out; }
+  62.17% { --vhs-roll: 0.164; animation-timing-function: ease-in-out; }
+  67.91% { --vhs-roll: 0.168; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
   80.96%, 100% { --vhs-roll: 0; }
 }
 
@@ -1357,22 +1370,22 @@ html.is-locked body {
 
 /* A new grain of snow about every frame */
 @keyframes vhs-boil {
-  0% { background-position: 0 0, 0 0; }
-  17% { background-position: 0 0, 41px 87px; }
-  33% { background-position: 0 0, 97px 13px; }
-  50% { background-position: 0 0, 23px 59px; }
-  67% { background-position: 0 0, 71px 101px; }
-  83% { background-position: 0 0, 113px 37px; }
+  0% { background-position: 0 0; }
+  17% { background-position: 41px 87px; }
+  33% { background-position: 97px 13px; }
+  50% { background-position: 23px 59px; }
+  67% { background-position: 71px 101px; }
+  83% { background-position: 113px 37px; }
 }
 
-/* Ambient, 1-1.5s: the same slow creep up, by --vhs-roll-amp (5-8%), a short
+/* Ambient, 1-1.5s: the same slow creep up, by --vhs-roll-amp (3.3-5.3%), a short
    unsteady hang, a quick, smooth drop back (14% of the run, 140-210ms) and a
    short fade of the band and snow with the picture still */
 @keyframes vhs-roll-ambient {
   0% { --vhs-roll: 0; animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95); }
-  55% { --vhs-roll: var(--vhs-roll-amp, 0.06); animation-timing-function: ease-in-out; }
-  66% { --vhs-roll: calc(var(--vhs-roll-amp, 0.06) * 0.96); animation-timing-function: ease-in-out; }
-  75% { --vhs-roll: calc(var(--vhs-roll-amp, 0.06) * 0.99); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  55% { --vhs-roll: var(--vhs-roll-amp, 0.04); animation-timing-function: ease-in-out; }
+  66% { --vhs-roll: calc(var(--vhs-roll-amp, 0.04) * 0.96); animation-timing-function: ease-in-out; }
+  75% { --vhs-roll: calc(var(--vhs-roll-amp, 0.04) * 0.99); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
   89%, 100% { --vhs-roll: 0; }
 }
 

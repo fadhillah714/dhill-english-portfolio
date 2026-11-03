@@ -2,14 +2,15 @@
    About portrait: analog signal failure. Now and then the photo plays like
    a portrait on a CRT fed by a worn VHS tape, in two moments that never run
    together:
-   - interactive (bold): once each time the mouse enters the photo, and on a
-     click while an ambient run is playing;
+   - interactive (bold): each time the mouse enters the photo and on each
+     click or tap, never stacked on a run already playing;
    - ambient (light): a small hiccup every 10 seconds without interaction
      on the photo, a little different each time.
    This script only decides when, hands the effect the photo's current
    source and varies the ambient run; the look is in components.css
-   (5. Home: about). Mouse devices only, never with reduced motion, and no
-   countdown while the tab is hidden.
+   (5. Home: about). Hover and the ambient runs need a mouse; a click or tap
+   plays it on any screen. Never with reduced motion, and no countdown
+   while the tab is hidden.
    ========================================================================== */
 
 (function () {
@@ -22,9 +23,9 @@
 
   const AMBIENT_EVERY = 10000;       // ms of calm before an ambient run
   const AMBIENT_TIME = [1000, 1500]; // ms, picked anew each run
-  const AMBIENT_ROLL = [0.05, 0.08]; // how far the picture slips up, as a share of its height
+  const AMBIENT_ROLL = [0.033, 0.053]; // how far the picture slips up, as a share of its height
   const AMBIENT_SHIFT = [2, 5];      // px the tracking band tears sideways, either way
-  const BOLD_TIME = 2300;            // ms; the slip itself (a quarter, slow up, smooth quick drop, fade) is in the CSS keyframes
+  const BOLD_TIME = 2300;            // ms; the slip itself (a sixth, slow up, smooth quick drop, fade) is in the CSS keyframes
   // Where the ambient tracking band may run, in % of the photo's height
   const ZONES = [[10, 26], [40, 56], [66, 82]]; // top, middle, bottom
 
@@ -36,7 +37,8 @@
 
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const enabled = () => finePointer.matches && !reducedMotion.matches;
+  const canPlay = () => !reducedMotion.matches;                     // a click or tap
+  const canHover = () => finePointer.matches && !reducedMotion.matches; // hover and the ambient runs
 
   let timer = 0;        // the one ambient countdown
   let playing = null;   // 'bold', 'ambient' or null: one run at a time
@@ -96,7 +98,7 @@
   // (Re)start the 10 seconds, only once everything is calm again
   function countdown() {
     clearCountdown();
-    if (inside || playing || !enabled() || document.visibilityState !== 'visible') return;
+    if (inside || playing || !canHover() || document.visibilityState !== 'visible') return;
     timer = setTimeout(() => {
       timer = 0;
       // Nobody would see it off screen: just count again
@@ -110,11 +112,16 @@
     if (playing && event.target === frame && !event.pseudoElement && event.animationName === KINDS[playing].animation) finish();
   });
 
-  frame.addEventListener('pointerenter', (event) => {
-    if (event.pointerType === 'touch' || !enabled()) return;
-    inside = true;
-    clearCountdown();
+  // Hover and click share this: a run already playing is left alone (so a
+  // hover and a click together play once), an ambient one gives way.
+  function interact() {
     if (playing !== 'bold') play('bold');
+  }
+
+  frame.addEventListener('pointerenter', (event) => {
+    if (event.pointerType === 'touch' || !canHover()) return;
+    inside = true;
+    interact();
   });
 
   frame.addEventListener('pointerleave', (event) => {
@@ -123,11 +130,9 @@
     countdown(); // waits for a running run: finish() counts down after it
   });
 
-  // A click is interaction too: it takes over an ambient run, otherwise it
-  // restarts the countdown.
+  // A click, or a tap on a touch screen
   frame.addEventListener('click', () => {
-    if (playing === 'ambient' && enabled()) play('bold');
-    else countdown();
+    if (canPlay()) interact();
   });
 
   // Hidden tab: no countdown and nothing left playing; back: 10 seconds anew.
@@ -141,7 +146,7 @@
   });
 
   function settingsChanged() {
-    if (enabled()) {
+    if (canPlay()) {
       countdown();
     } else {
       clearCountdown();

@@ -23,9 +23,9 @@
 
   const AMBIENT_EVERY = 10000;       // ms of calm before an ambient run
   const AMBIENT_TIME = [1000, 1500]; // ms, picked anew each run
-  const AMBIENT_ROLL = [0.033, 0.053]; // how far the picture slips up, as a share of its height
+  const AMBIENT_ROLL = [0.025, 0.04]; // how far the picture slips up, as a share of its height
   const AMBIENT_SHIFT = [2, 5];      // px the tracking band tears sideways, either way
-  const BOLD_TIME = 2300;            // ms; the slip itself (a sixth, slow up, smooth quick drop, fade) is in the CSS keyframes
+  const BOLD_TIME = 2300;            // ms; the slip itself (an eighth, slow up, smooth quick drop, fade) is in the CSS keyframes
   // Where the ambient tracking band may run, in % of the photo's height
   const ZONES = [[10, 26], [40, 56], [66, 82]]; // top, middle, bottom
 

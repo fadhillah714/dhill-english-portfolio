@@ -146,8 +146,8 @@ window.PORTFOLIO = {
     {
       id: 'A1',
       slug: 'assignment-1',
-      title: 'Self-Introduction',
-      summary: 'A self-introduction video presenting my personal background, academic journey, current activities, and future aspirations as an Informatics student. The video highlights who I am, what I am currently working on during this semester, and the goals I hope to achieve in the coming years.',
+      title: 'Self Introduction',
+      summary: 'A self introduction video presenting my personal background, academic journey, current activities, and future aspirations as an Informatics student. The video highlights who I am, what I am currently working on during this semester, and the goals I hope to achieve in the coming years.',
       video: {
         drive: 'https://drive.google.com/file/d/1HMC39VuQEwb76vHQ1ueMVAP_4hBUvP4J/preview',
         poster: 'assets/img/screenshots/A1_thumbnail_video.webp',

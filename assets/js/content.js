@@ -680,7 +680,7 @@ window.PORTFOLIO = {
     }
     return h(
       'section',
-      { class: `detail__media${video.ratio === '4:3' ? ' detail__media--4x3' : ''}`, 'aria-labelledby': 'video-heading' },
+      { class: `detail__media${video.ratio === '4:3' ? ' detail__media--4x3' : ''}${drive ? ' detail__media--drive' : ''}`, 'aria-labelledby': 'video-heading' },
       h('h2', { class: 'label', id: 'video-heading' }, 'Video'),
       h('div', { class: 'frame frame--flat' }, h('div', { class: 'frame__inner video-slot' }, player)),
       video.caption ? h('p', { class: 'detail__caption' }, video.caption) : null,

@@ -2760,6 +2760,25 @@ main[data-assignment] > .page-hero {
   aspect-ratio: 4 / 3;
 }
 
+/* Google Drive's player is never shorter than 300px: in a shorter frame (a
+   phone) it spills over the bottom and the video sits low with its bottom cut
+   off. So a Drive slot is at least 300px tall, and on narrow screens the video
+   shows whole, centred between thin black bands. The height comes from the
+   slot's width (cqw, the frame being the container) rather than min-height,
+   which would widen the slot through its aspect ratio */
+.detail__media--drive .frame {
+  container-type: inline-size;
+}
+
+.detail__media--drive .video-slot {
+  width: 100%;
+  height: max(300px, 56.25cqw);
+}
+
+.detail__media--drive.detail__media--4x3 .video-slot {
+  height: max(300px, 75cqw);
+}
+
 .video-slot__player {
   display: block;
   width: 100%;
@@ -2792,7 +2811,7 @@ main[data-assignment] > .page-hero {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .video-slot__cover.is-gone {

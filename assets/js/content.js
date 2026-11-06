@@ -123,9 +123,13 @@ window.PORTFOLIO = {
                       { label: "View paper (PDF)", href: "https://..." }
        closing      optional closing note after the content:
                       { label: "Research focus", text: "..." }
-       video        optional video area: { youtube: "", src: "", poster: "", caption: "" }
-                      youtube  a YouTube link, src a video file such as
-                      "assignments/files/video.mp4"; with neither, "Video coming soon"
+       video        optional video area: { youtube: "", drive: "", src: "", poster: "", ratio: "", caption: "" }
+                      youtube  a YouTube link, drive a Google Drive file link or ID
+                      (shared as "Anyone with the link"), src a video file such as
+                      "assignments/files/video.mp4"; with none, "Video coming soon".
+                      poster  an image shown before the video plays (a video
+                      file or a Drive video)
+                      ratio "4:3" for a 4:3 recording (16:9 otherwise)
        document     optional PDF shown on the page with View and Download links:
                       { src: "assignments/files/report.pdf", title: "..." }
                       fullPage: true shapes the viewer like a portrait page,
@@ -145,10 +149,9 @@ window.PORTFOLIO = {
       title: 'Self-Introduction',
       summary: 'A self-introduction video presenting my personal background, academic journey, current activities, and future aspirations as an Informatics student. The video highlights who I am, what I am currently working on during this semester, and the goals I hope to achieve in the coming years.',
       video: {
-        youtube: '',
-        src: '',
-        poster: '',
-        caption: 'The self-introduction video will be available here soon.',
+        drive: 'https://drive.google.com/file/d/1HMC39VuQEwb76vHQ1ueMVAP_4hBUvP4J/preview',
+        poster: 'assets/img/screenshots/A1_thumbnail_video.webp',
+        ratio: '4:3',
       },
       outline: {
         label: 'Assignment sections',
@@ -593,11 +596,65 @@ window.PORTFOLIO = {
     return match ? match[1] : '';
   }
 
-  /* Video area: a YouTube embed, a video file or, with neither, "Video coming soon" */
+  /* "https://drive.google.com/file/d/ID/view", ".../preview", "...open?id=ID" or the bare ID */
+  function driveId(url) {
+    const text = String(url).trim();
+    const match = text.match(/\/file\/d\/([\w-]{20,})/) || text.match(/[?&]id=([\w-]{20,})/) || text.match(/^([\w-]{20,})$/);
+    return match ? match[1] : '';
+  }
+
+  /* The play triangle on a video poster */
+  function playIcon() {
+    const icon = document.createElementNS(SVG_NS, 'svg');
+    icon.setAttribute('viewBox', '0 0 10 12');
+    icon.setAttribute('focusable', 'false');
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('d', 'M0 0 10 6 0 12Z');
+    icon.append(path);
+    return icon;
+  }
+
+  /* A poster over an embedded player, which cannot be told to start from here
+     (Drive ignores autoplay). With a mouse it lets clicks through to the
+     player, which starts on a click anywhere, so one click plays the video, and
+     goes away as soon as the player takes the focus (a click or Tab into it).
+     On touch screens, where that focus is not reliable, a first tap takes it
+     away and the player's button plays the video. */
+  function posterOver(frame, poster) {
+    const cover = h(
+      'div',
+      { class: 'video-slot__cover', 'aria-hidden': 'true' },
+      h('img', { src: resolve(poster), alt: '', decoding: 'async' }),
+      h('span', { class: 'video-slot__play' }, playIcon(), 'Play'),
+    );
+    const reveal = () => {
+      cover.classList.add('is-gone');
+      window.removeEventListener('blur', onBlur);
+    };
+    const onBlur = () => setTimeout(() => { if (document.activeElement === frame) reveal(); });
+    window.addEventListener('blur', onBlur);
+    cover.addEventListener('click', reveal);
+    return cover;
+  }
+
+  /* Video area: a YouTube or Google Drive embed, a video file or, with none,
+     "Video coming soon" */
   function videoBlock(video, title) {
     const id = video.youtube ? youtubeId(video.youtube) : '';
+    const drive = !id && video.drive ? driveId(video.drive) : '';
     let player;
-    if (id) {
+    if (drive) {
+      // Drive's own player, played on the page (the file must be shared with anyone with the link)
+      const frame = h('iframe', {
+        class: 'video-slot__player',
+        src: `https://drive.google.com/file/d/${drive}/preview`,
+        title: `${title} (video)`,
+        loading: 'lazy',
+        allow: 'autoplay',
+        allowfullscreen: true,
+      });
+      player = video.poster ? [frame, posterOver(frame, video.poster)] : frame;
+    } else if (id) {
       player = h('iframe', {
         class: 'video-slot__player',
         src: `https://www.youtube-nocookie.com/embed/${id}`,
@@ -623,7 +680,7 @@ window.PORTFOLIO = {
     }
     return h(
       'section',
-      { class: 'detail__media', 'aria-labelledby': 'video-heading' },
+      { class: `detail__media${video.ratio === '4:3' ? ' detail__media--4x3' : ''}`, 'aria-labelledby': 'video-heading' },
       h('h2', { class: 'label', id: 'video-heading' }, 'Video'),
       h('div', { class: 'frame frame--flat' }, h('div', { class: 'frame__inner video-slot' }, player)),
       video.caption ? h('p', { class: 'detail__caption' }, video.caption) : null,

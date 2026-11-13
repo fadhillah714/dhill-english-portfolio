@@ -12,7 +12,8 @@ index.html                  Home: hero, About Me, Contact
 skills-projects.html        Skills and project showcase
 assignments/
   index.html                Assignment overview
-  assignment-1..3.html      One page per assignment (same template)
+  assignment-1..4.html      One page per assignment (same template)
+  UTS.html                  The UTS assignment (A5), same template
 personal_image.jpeg         Original profile photo (kept as is)
 assets/
   css/tokens.css            Colours, type, spacing (the six palette colours live here)
@@ -58,6 +59,15 @@ from that one file, so names and links never drift apart.
   several paragraphs and its own `link`), `closing` (a note after the content), `video`
   and `document` (a PDF shown on the page with View and Download links). `links` appear
   as "Files & links" under the summary. Put files in `assignments/files/`.
+  `heading` sets the page title in place of `title`, `code` replaces the "A5" marks
+  and breadcrumb prefix on the page and on the overview (A5 shows "UTS"),
+  `menuLabel` replaces the "A5 - Title" label in the Assignments menu,
+  `video.loadOnClick` (with a `poster`) loads the Drive player only when its play
+  button is pressed and starts it straight away, `summary`
+  can be a list of
+  parts with their own headings, `video.label` and `document.label` rename the
+  "Video" and "Document" headings, and `documentFirst: true` puts the document above
+  the video.
   To add one, add an entry (for example `id: 'A4'`, `slug: 'assignment-4'`), copy
   `assignments/assignment-1.html` to `assignments/assignment-4.html`, change
   `data-assignment` on `<main>` to the new slug, and update `<title>` and the meta
@@ -66,6 +76,11 @@ from that one file, so names and links never drift apart.
   `assignments/CV English Profesional 2300018235.pdf`. After updating the CV, copy the new
   PDF over that file (same name). Keep personal details you do not want public, such as a
   phone number, out of this PDF: everything in it is published.
+- **A5 UTS** (`assignments/UTS.html`, slug `UTS`). The page shows `assets/documents/Application Letter 2300018235.pdf` as
+  it is and plays the video presentation from Google Drive (shared as "Anyone with the
+  link") once its thumbnail, `assets/img/screenshots/UTS_thumbnail_video.png`, is
+  pressed. To replace the letter, copy the new PDF over that file (same name); the same
+  rule applies: everything in it, including the PDF's author field, is published.
 - **A1 video.** In `content.js`, set `video.youtube` to the YouTube link (any form, such
   as `https://youtu.be/...`), or put the file in `assignments/files/` and set `video.src`
   to its path, for example `assignments/files/self-introduction.mp4`. The "Video coming

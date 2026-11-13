@@ -2998,6 +2998,29 @@ main[data-assignment] > .page-hero {
   max-width: 28em;
 }
 
+/* A summary in parts (one per piece of work, e.g. the letter and the video),
+   each under a small starred heading */
+.detail__summary-parts {
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 0.4rem;
+}
+
+.detail__summary-part {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.detail__summary-part .label {
+  gap: 0.55rem;
+}
+
+.detail__summary-part .star {
+  width: 1.35rem;
+  height: 1.35rem;
+  color: var(--sunset-orange);
+}
+
 .panel {
   padding: clamp(1.25rem, 3vw, 2.25rem);
   background: var(--ink);
@@ -3226,6 +3249,56 @@ main[data-assignment] > .page-hero {
   .video-slot__cover {
     pointer-events: none;
   }
+}
+
+/* A poster that is a play button (content.js, posterButton): the player loads
+   only once it is pressed, so it takes clicks with every pointer. The
+   thumbnail fills the slot and the play tag keeps its bottom-left corner; the
+   focus ring is drawn inside, as the frame clips everything around it. */
+.video-slot__cover--load {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.video-slot__cover--load img {
+  object-fit: cover;
+}
+
+/* Until the player loads, the slot keeps the video's own shape on phones too
+   (Drive's 300px minimum applies only to the player itself) */
+.detail__media--drive .video-slot:has(> .video-slot__cover--load) {
+  height: auto;
+}
+
+/* (on a layer of its own: the thumbnail would cover the button's outline) */
+.video-slot__cover--load:focus-visible {
+  outline: 0;
+}
+
+.video-slot__cover--load:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: 0.75rem;
+  outline: 2px solid var(--cream);
+}
+
+.video-slot__cover--load .video-slot__play {
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.video-slot__cover--load .video-slot__play svg {
+  transition: fill 0.2s var(--ease);
+}
+
+.video-slot__cover--load:is(:hover, :focus-visible) .video-slot__play {
+  background: var(--sunset-orange);
+  color: var(--ink);
+}
+
+.video-slot__cover--load:is(:hover, :focus-visible) .video-slot__play svg {
+  fill: var(--ink);
 }
 
 .video-slot__soon {

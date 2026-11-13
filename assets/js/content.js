@@ -110,6 +110,17 @@ window.PORTFOLIO = {
        id           short code shown in the UI, e.g. "A1"
        slug         page file name without .html
        title, summary
+                    summary can also be a list of parts, each with its own heading:
+                      [{ label: "Application Letter", text: "..." }]
+                      (the overview page shows the texts as one paragraph)
+       heading      optional page title in place of title, also used in the
+                      breadcrumb and on the overview; the menus, the previous/
+                      next links and the browser tab keep using title
+       code         optional code shown in place of id on the page itself and
+                      on the overview (the big outlined marks and the
+                      breadcrumb), e.g. "UTS"
+       menuLabel    optional label in the Assignments menu (dropdown and phone
+                      menu) in place of "A5 - Title"
        subtitle     optional line under the title, e.g. the full title of a report
        info         optional facts shown under the summary:
                       [{ label: "Platform", value: "Shopee" },
@@ -129,13 +140,20 @@ window.PORTFOLIO = {
                       "assignments/files/video.mp4"; with none, "Video coming soon".
                       poster  an image shown before the video plays (a video
                       file or a Drive video)
+                      loadOnClick  true (Drive, with a poster) loads the player
+                      only when the poster's play button is pressed, and
+                      starts it at once
                       ratio "4:3" for a 4:3 recording (16:9 otherwise)
+                      label  heading above the player ("Video" otherwise)
+                      title  what the player is called for screen readers
        document     optional PDF shown on the page with View and Download links:
                       { src: "assignments/files/report.pdf", title: "..." }
                       fullPage: true shapes the viewer like a portrait page,
                       with the page fitted to its width (scroll for the next
-                      page); a document that is the only content sits beside
-                      the summary on wide screens
+                      page); a document that is the only content (or comes with
+                      only a video) sits beside the summary on wide screens
+                      label  heading above the document ("Document" otherwise)
+       documentFirst  true shows the document above the video
        content      paragraphs (strings); with no content and no outline,
                       "Assignment content will be added soon." is shown
        images       [{ src: "assets/img/...", alt: "...", caption: "" }]
@@ -151,6 +169,7 @@ window.PORTFOLIO = {
       video: {
         drive: 'https://drive.google.com/file/d/1BCrq51XZdXT2nqe2hBcvZJPpTiZ6sBse/view?usp=sharing',
         poster: 'assets/img/screenshots/A1_thumbnail_video.webp',
+        loadOnClick: true,
         ratio: '4:3',
       },
       outline: {
@@ -202,7 +221,7 @@ window.PORTFOLIO = {
     {
       id: 'A3',
       slug: 'assignment-3',
-      title: 'Finding Journals on an Informatics Topic',
+      title: 'Journals on Informatics Topic',
       summary: 'This assignment presents five research papers related to Natural Language Processing (NLP), deep learning, text classification, and chatbot development. The selected papers explore different applications of language processing techniques, ranging from campus facility search systems and public information services to disaster monitoring and traffic event detection.',
       outline: {
         label: 'Research papers',
@@ -297,6 +316,37 @@ window.PORTFOLIO = {
         title: 'Curriculum Vitae of Muhammad Fadhillah',
         fullPage: true,
       },
+      content: [],
+      images: [],
+      links: [],
+      placeholder: false,
+    },
+    {
+      id: 'A5',
+      slug: 'UTS',
+      title: 'UTS: Application & Presentation',
+      heading: 'Application & Presentation',
+      code: 'UTS',
+      menuLabel: 'UTS – Application & Presentation',
+      summary: [
+        { label: 'Application Letter', text: 'A formal job application letter for the AI Engineer position at TechNova Digital Solutions, highlighting my educational background, technical skills, projects, and internship experience.' },
+        { label: 'Video Presentation', text: 'A personal introduction video presenting my technical skills, completed projects, internship experience, and motivation for pursuing a career as an AI Engineer.' },
+      ],
+      document: {
+        src: 'assets/documents/Application Letter 2300018235.pdf',
+        title: 'Application letter of Muhammad Fadhillah for the AI Engineer position',
+        label: 'Application Letter',
+        fullPage: true,
+      },
+      video: {
+        drive: 'https://drive.google.com/file/d/1BMf7iIZh5ytavZaB4Wx6PQGuSlsGS-Mg/preview',
+        poster: 'assets/img/screenshots/UTS_thumbnail_video.png',
+        loadOnClick: true,
+        label: 'Video Presentation',
+        title: 'UTS video presentation by Muhammad Fadhillah',
+        ratio: '4:3',
+      },
+      documentFirst: true,
       content: [],
       images: [],
       links: [],
@@ -400,7 +450,7 @@ window.PORTFOLIO = {
                 'aria-current': assignment.slug === current ? 'page' : null,
               },
               star(),
-              `${assignment.id} - ${assignment.title}`,
+              assignment.menuLabel || `${assignment.id} - ${assignment.title}`,
             ),
           ),
         ),
@@ -545,13 +595,26 @@ window.PORTFOLIO = {
 
   /* ---------------------------------------------------------------- assignments */
 
+  /* A summary in parts reads as one paragraph where there is room for one */
+  const summaryText = (summary) => (Array.isArray(summary) ? summary.map((part) => part.text).join(' ') : summary);
+
+  /* A summary in parts: each part under its own small heading */
+  const summaryParts = (parts) =>
+    h(
+      'div',
+      { class: 'detail__summary-parts', 'data-field': 'summary' },
+      parts.map((part) =>
+        h('div', { class: 'detail__summary-part' }, h('h3', { class: 'label' }, star(), part.label), h('p', { class: 'detail__summary-text' }, part.text)),
+      ),
+    );
+
   function renderAssignmentRows(target) {
     target.replaceChildren(
       ...data.assignments.map((assignment) =>
         h(
           'li',
           { class: 'assign-row' },
-          h('span', { class: 'assign-row__num outline-num', 'aria-hidden': 'true' }, assignment.id),
+          h('span', { class: 'assign-row__num outline-num', 'aria-hidden': 'true' }, assignment.code || assignment.id),
           h(
             'div',
             { class: 'assign-row__main' },
@@ -561,11 +624,11 @@ window.PORTFOLIO = {
               h(
                 'a',
                 { class: 'assign-row__link', href: pageOf(assignment) },
-                hidden(`${assignment.id}: `),
-                h('span', { class: 'assign-row__label has-wave' }, assignment.title),
+                hidden(`${assignment.code || assignment.id}: `),
+                h('span', { class: 'assign-row__label has-wave' }, assignment.heading || assignment.title),
               ),
             ),
-            h('p', { class: 'assign-row__summary' }, assignment.summary),
+            h('p', { class: 'assign-row__summary' }, summaryText(assignment.summary)),
             assignment.placeholder ? statusTag('Assignment details coming soon') : null,
           ),
           h('span', { class: 'assign-row__arrow', 'aria-hidden': 'true' }, '→'),
@@ -637,28 +700,58 @@ window.PORTFOLIO = {
     return cover;
   }
 
+  /* A poster that is a play button (video.loadOnClick): the player is only
+     loaded when it is pressed, then takes its place and the focus and starts
+     at once (Drive's autoplay=1, which the browser allows because the page
+     was just clicked). Where a browser still blocks it, Drive's own play
+     button is there. */
+  function posterButton(poster, name, makePlayer) {
+    const button = h(
+      'button',
+      { type: 'button', class: 'video-slot__cover video-slot__cover--load', 'aria-label': `Play video: ${name}` },
+      h('img', { src: resolve(poster), alt: '', loading: 'lazy', decoding: 'async' }),
+      h('span', { class: 'video-slot__play', 'aria-hidden': 'true' }, playIcon(), 'Play'),
+    );
+    button.addEventListener(
+      'click',
+      () => {
+        const player = makePlayer();
+        button.replaceWith(player);
+        player.focus();
+      },
+      { once: true },
+    );
+    return button;
+  }
+
   /* Video area: a YouTube or Google Drive embed, a video file or, with none,
      "Video coming soon" */
   function videoBlock(video, title) {
     const id = video.youtube ? youtubeId(video.youtube) : '';
     const drive = !id && video.drive ? driveId(video.drive) : '';
+    const playerTitle = video.title || `${title} (video)`;
     let player;
     if (drive) {
       // Drive's own player, played on the page (the file must be shared with anyone with the link)
-      const frame = h('iframe', {
-        class: 'video-slot__player',
-        src: `https://drive.google.com/file/d/${drive}/preview`,
-        title: `${title} (video)`,
-        loading: 'lazy',
-        allow: 'autoplay',
-        allowfullscreen: true,
-      });
-      player = video.poster ? [frame, posterOver(frame, video.poster)] : frame;
+      const driveFrame = (autoplay) =>
+        h('iframe', {
+          class: 'video-slot__player',
+          src: `https://drive.google.com/file/d/${drive}/preview${autoplay ? '?autoplay=1' : ''}`,
+          title: playerTitle,
+          loading: autoplay ? null : 'lazy',
+          allow: 'autoplay',
+          allowfullscreen: true,
+        });
+      if (video.poster && video.loadOnClick) player = posterButton(video.poster, playerTitle, () => driveFrame(true));
+      else {
+        const frame = driveFrame();
+        player = video.poster ? [frame, posterOver(frame, video.poster)] : frame;
+      }
     } else if (id) {
       player = h('iframe', {
         class: 'video-slot__player',
         src: `https://www.youtube-nocookie.com/embed/${id}`,
-        title: `${title} (video)`,
+        title: playerTitle,
         loading: 'lazy',
         allow: 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
         referrerpolicy: 'strict-origin-when-cross-origin',
@@ -681,7 +774,7 @@ window.PORTFOLIO = {
     return h(
       'section',
       { class: `detail__media${video.ratio === '4:3' ? ' detail__media--4x3' : ''}${drive ? ' detail__media--drive' : ''}`, 'aria-labelledby': 'video-heading' },
-      h('h2', { class: 'label', id: 'video-heading' }, 'Video'),
+      h('h2', { class: 'label', id: 'video-heading' }, video.label || 'Video'),
       h('div', { class: 'frame frame--flat' }, h('div', { class: 'frame__inner video-slot' }, player)),
       video.caption ? h('p', { class: 'detail__caption' }, video.caption) : null,
     );
@@ -749,7 +842,8 @@ window.PORTFOLIO = {
   /* An embedded PDF with View and Download links. Browsers that cannot show a PDF
      inline (most phones) get a short note and use the links instead. */
   function documentBlock(doc, title) {
-    const href = resolve(doc.src);
+    /* A file name may keep its spaces ("Application Letter.pdf") */
+    const href = resolve(doc.src).replace(/ /g, '%20');
     const note = (...lines) => h('div', { class: 'document__fallback' }, lines.map((line) => h('p', {}, line)));
     const actions = h(
       'ul',
@@ -788,7 +882,7 @@ window.PORTFOLIO = {
     return h(
       'section',
       { class: doc.fullPage ? 'detail__document detail__document--page' : 'detail__document', 'aria-labelledby': 'document-heading' },
-      h('div', { class: 'document__head' }, h('h2', { class: 'label', id: 'document-heading' }, 'Document'), actions),
+      h('div', { class: 'document__head' }, h('h2', { class: 'label', id: 'document-heading' }, doc.label || 'Document'), actions),
       h('div', { class: 'frame frame--flat' }, frame),
     );
   }
@@ -800,10 +894,13 @@ window.PORTFOLIO = {
     const assignment = list[index];
     const field = (name) => main.querySelector(`[data-field="${name}"]`);
 
-    fill(field('title'), splitTitle(assignment.title));
-    fill(field('id'), assignment.id);
-    fill(field('crumb'), `${assignment.id} - ${assignment.title}`);
-    fill(field('summary'), assignment.summary);
+    const heading = assignment.heading || assignment.title;
+    const code = assignment.code || assignment.id;
+    fill(field('title'), splitTitle(heading));
+    fill(field('id'), code);
+    fill(field('crumb'), `${code} - ${heading}`);
+    if (Array.isArray(assignment.summary)) field('summary')?.replaceWith(summaryParts(assignment.summary));
+    else fill(field('summary'), assignment.summary);
     const status = field('status');
     if (status) status.hidden = !assignment.placeholder;
 
@@ -816,7 +913,8 @@ window.PORTFOLIO = {
     if (summarySection && listOf(assignment.info).length) summarySection.append(infoList(listOf(assignment.info)));
 
     const contentSection = main.querySelector('.detail__content');
-    if (assignment.video && contentSection) contentSection.before(videoBlock(assignment.video, assignment.title));
+    const videoSection = assignment.video && contentSection ? videoBlock(assignment.video, assignment.title) : null;
+    if (videoSection) contentSection.before(videoSection);
 
     const paragraphs = assignment.content || [];
     const outline = assignment.outline && listOf(assignment.outline.items).length ? assignment.outline : null;
@@ -843,14 +941,16 @@ window.PORTFOLIO = {
     if (contentSection && !paragraphs.length && !outline && (assignment.video || hasDocument)) contentSection.hidden = true;
 
     /* A long title is set smaller, so it does not fill the whole screen */
-    if (titleNode) titleNode.classList.toggle('page-title--long', assignment.title.length > 24);
+    if (titleNode) titleNode.classList.toggle('page-title--long', heading.length > 24);
 
     const detail = main.querySelector('.detail');
     if (hasDocument && detail) {
       const documentSection = documentBlock(assignment.document, assignment.title);
-      /* A document that is the only content sits beside the summary, like a video */
-      if (contentSection?.hidden && !assignment.video) documentSection.classList.add('detail__document--side');
-      detail.append(documentSection);
+      /* A document that is the only content, or comes with only a video, sits
+         beside the summary, like a video */
+      if (contentSection?.hidden) documentSection.classList.add('detail__document--side');
+      if (assignment.documentFirst && videoSection) videoSection.before(documentSection);
+      else detail.append(documentSection);
     }
 
     const images = assignment.images || [];

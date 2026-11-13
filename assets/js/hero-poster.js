@@ -69,6 +69,14 @@
   fx.setAttribute('aria-hidden', 'true');
   hero.append(fx);
 
+  // A browser may still hold an older components.css in its cache, one without
+  // these styles. Then no effects at all: unstyled sparks would land in the
+  // hero's grid and stretch it, blowing up its artwork.
+  if (getComputedStyle(fx).position !== 'absolute') {
+    fx.remove();
+    return;
+  }
+
   // kind: 'star', 'sparkle', 'dot' or 'ring'
   function spark(kind, size, color, layer) {
     let element;

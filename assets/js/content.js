@@ -646,7 +646,7 @@ window.PORTFOLIO = {
       'a',
       { class: `pager__link pager__link--${direction}`, href: pageOf(assignment), rel: direction },
       h('span', { class: 'pager__dir' }, label),
-      h('span', { class: 'pager__title has-wave' }, `${assignment.id} - ${assignment.title}`),
+      h('span', { class: 'pager__title has-wave' }, `${assignment.code || assignment.id} - ${assignment.heading || assignment.title}`),
     );
   }
 
